@@ -825,6 +825,13 @@ function userphoto_options_page()
                name="userphoto_jpeg_compression" value="<?php echo $userphoto_jpeg_compression ?>"/>%
         <?php echo $afterRow ?>
         <?php echo $beforeRow ?>
+        <label for="userphoto_white_transparency">
+            <?php _e('Fill transparency with white instead of black') ?>
+        </label>
+        <?php echo $betweenRow; ?>
+        <input type="checkbox" name="userphoto_white_transparency" id="userphoto_white_transparency" value="1" />
+        <?php echo $afterRow; ?>
+        <?php echo $beforeRow ?>
         <label for="userphoto_admin_notified">
             <?php _e("Notify this administrator by email when user photo needs approval: ", 'user-photo') ?>
         </label>
@@ -922,6 +929,12 @@ function userphoto_resize_image($filename, $newFilename, $cropDetails, &$error) 
         $full_dimension = get_option('userphoto_maximum_dimension');
 
         $imageresized = imagecreatetruecolor($cropDetails['tgtW'], $cropDetails['tgtH']);
+
+        if ( get_option( 'userphoto_white_transparency', false ) ) {
+            $backgroundColor = imagecolorallocate($imageresized, 255, 255, 255);
+            imagefill($imageresized, 0, 0, $backgroundColor);
+        }
+
         @ imagecopyresampled($imageresized, $image,
                              0, 0, $cropDetails['x'], $cropDetails['y'],
                              $cropDetails['tgtW'], $cropDetails['tgtH'], $cropDetails['w'], $cropDetails['h']);
