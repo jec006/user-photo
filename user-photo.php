@@ -76,7 +76,7 @@ $userphoto_prevent_override_avatar = false;
 
 # Load up the localization file if we're using WordPress in a different language
 # Place it in the "localization" folder and name it "user-photo-[value in wp-config].mo"
-load_plugin_textdomain('user-photo', PLUGINDIR . '/user-photo/localization'); #(thanks Pakus)
+load_plugin_textdomain('user-photo', false, dirname( plugin_basename( __FILE__ ))); #(thanks Pakus)
 
 function userphoto__init(){
 	if(get_option('userphoto_override_avatar') && !is_admin())
@@ -483,7 +483,7 @@ function userphoto_profile_update($userID){
 		}
 		
 		#Set photo approval status
-		if($current_user->has_cap('edit_users') &&
+		if(current_user_can('edit_users') &&
 		   array_key_exists('userphoto_approvalstatus', $_POST) &&
 		   in_array((int)$_POST['userphoto_approvalstatus'], array(USERPHOTO_PENDING, USERPHOTO_REJECTED, USERPHOTO_APPROVED))
 		){
@@ -609,7 +609,7 @@ function userphoto_display_selector_fieldset(){
 			</p>
 			<hr />
             
-			<?php if(!$current_user->has_cap('edit_users')): ?>
+			<?php if(!current_user_can('edit_users')): ?>
 				<?php if($profileuser->userphoto_approvalstatus == USERPHOTO_PENDING): ?>
 					<p id='userphoto-status-pending'><?php echo _e("Your profile photo has been submitted for review.", 'user-photo') ?></p>
 				<?php elseif($profileuser->userphoto_approvalstatus == USERPHOTO_REJECTED): ?>
@@ -635,7 +635,7 @@ function userphoto_display_selector_fieldset(){
 		printf(__("max upload size %s"),ini_get("upload_max_filesize"));
 		?>)</span></label>
 		</p>
-        <?php if($current_user->has_cap('edit_users') && ($profileuser->ID != $current_user->ID) && $profileuser->userphoto_image_file): ?>
+        <?php if(current_user_can('edit_users') && ($profileuser->ID != $current_user->ID) && $profileuser->userphoto_image_file): ?>
 			<p id="userphoto-approvalstatus-controls" <?php if($profileuser->userphoto_approvalstatus == USERPHOTO_PENDING) echo "class='pending'" ?>>
 			<label><?php _e("Approval status:", 'user-photo') ?>
 			<select name="userphoto_approvalstatus" id="userphoto_approvalstatus" onchange="userphoto_approvalstatus_onchange()">
@@ -670,7 +670,7 @@ add_action('edit_user_profile', 'userphoto_display_selector_fieldset');
 
 function userphoto_add_page() {
 	//if (function_exists('add_options_page'))
-	add_options_page('User Photo', 'User Photo', 8, __FILE__, 'userphoto_options_page');
+	add_options_page('User Photo', 'User Photo', 'manage_options', __FILE__, 'userphoto_options_page');
 }
 add_action('admin_menu', 'userphoto_add_page');
 
