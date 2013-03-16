@@ -79,7 +79,7 @@ $userphoto_prevent_override_avatar = false;
 load_plugin_textdomain('user-photo', false, dirname( plugin_basename( __FILE__ ))); #(thanks Pakus)
 
 function userphoto__init(){
-	if(get_option('userphoto_override_avatar') && !is_admin())
+	if(get_option('userphoto_override_avatar'))
 		add_filter('get_avatar', 'userphoto_filter_get_avatar', 10, 4);
 }
 add_action('init', 'userphoto__init');
@@ -524,6 +524,9 @@ add_action('delete_user', 'userphoto_delete_user');
 function userphoto_admin_useredit_head(){
 	if(preg_match("/(user-edit\.php|profile.php)$/", $_SERVER['PHP_SELF']))
 		print '<link rel="stylesheet" href="../wp-content/plugins/user-photo/admin.css" />';
+	else {
+		print '<style type="text/css">.username .photo, #people-list-form-shell .photo { max-width: 60px; } </style>';
+	}
 }
 function userphoto_admin_options_head(){
 	print '<link rel="stylesheet" href="../wp-content/plugins/user-photo/admin.css" />';
