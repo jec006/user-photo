@@ -69,6 +69,8 @@ add_option("userphoto_admin_notified", 0); //0 means disable
 add_option("userphoto_level_moderated", 2); //Note: -1 means disable
 add_option("userphoto_use_avatar_fallback", false);
 add_option("userphoto_override_avatar", false);
+add_option("userphoto_white_transparency", false);
+
 $userphoto_using_avatar_fallback = false;
 $userphoto_prevent_override_avatar = false;
 
@@ -681,7 +683,8 @@ function userphoto_options_page(){
 	$userphoto_level_moderated = get_option( 'userphoto_level_moderated' );
 	$userphoto_use_avatar_fallback = get_option('userphoto_use_avatar_fallback');
 	$userphoto_override_avatar = get_option('userphoto_override_avatar');
-		
+	$userphoto_white_transparency = get_option('userphoto_white_transparency');
+
 	#Get new updated option values, and save them
 	if( @$_POST['action'] == 'update' ) {
 		check_admin_referer('update-options-userphoto');
@@ -700,13 +703,16 @@ function userphoto_options_page(){
 		
 		$userphoto_level_moderated = (int)$_POST['userphoto_level_moderated'];
 		update_option('userphoto_level_moderated', $userphoto_level_moderated);
-		
+
 		$userphoto_use_avatar_fallback = !empty($_POST['userphoto_use_avatar_fallback']);
 		update_option('userphoto_use_avatar_fallback', $userphoto_use_avatar_fallback);
-		
+
 		$userphoto_override_avatar = !empty($_POST['userphoto_override_avatar']);
 		update_option('userphoto_override_avatar', $userphoto_override_avatar);
-		
+
+		$userphoto_white_transparency = !empty($_POST['userphoto_white_transparency']);
+    update_option('userphoto_white_transparency', $userphoto_white_transparency);
+
 		?>
 		<div id="message" class="updated fade"><p><strong><?php _e('Options saved.' ); ?></strong></p></div>
 		<?php
@@ -768,6 +774,15 @@ function userphoto_options_page(){
 				<input type="range" min="1" max="100" step="1" size="3" id="userphoto_jpeg_compression" name="userphoto_jpeg_compression" value="<?php echo $userphoto_jpeg_compression ?>" />%
 			<?php echo $afterRow ?>
 			<?php echo $beforeRow ?>
+			  <label for="userphoto_white_transparency">
+          <?php _e('Fill with white instead of black', 'user-photo') ?>
+        </label>
+        <?php echo $betweenRow; ?>
+        <input type="checkbox" name="userphoto_white_transparency" id="userphoto_white_transparency"
+                <?php if ($userphoto_white_transparency) echo ' checked="checked"'; ?> value="1" />
+        <?php _e("Change the color which replaces transparency during resize from black to white.", 'user-photo') ?>
+        <?php echo $afterRow; ?>
+        <?php echo $beforeRow ?>
 				<label for="userphoto_admin_notified">
 					<?php _e("Notify this administrator by email when user photo needs approval: ", 'user-photo') ?>
 				</label>
@@ -883,6 +898,12 @@ function userphoto_resize_image($filename, $newFilename, $maxdimension, &$error)
 		}
 
 		$imageresized = imagecreatetruecolor( $image_new_width, $image_new_height);
+
+    if ( get_option( 'userphoto_white_transparency', false ) ) {
+	    $backgroundColor = imagecolorallocate($imageresized, 255, 255, 255);
+	    imagefill($imageresized, 0, 0, $backgroundColor);
+		}
+
 		@ imagecopyresampled( $imageresized, $image, 0, 0, 0, 0, $image_new_width, $image_new_height, $info[0], $info[1] );
 
 		// move the thumbnail to its final destination
