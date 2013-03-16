@@ -732,6 +732,7 @@ function userphoto_options_page()
     $userphoto_level_moderated = get_option('userphoto_level_moderated');
     $userphoto_use_avatar_fallback = get_option('userphoto_use_avatar_fallback');
     $userphoto_override_avatar = get_option('userphoto_override_avatar');
+    $userphoto_white_transparency = get_option('userphoto_white_transparency');
 
     #Get new updated option values, and save them
     if (@$_POST['action'] == 'update') {
@@ -757,6 +758,9 @@ function userphoto_options_page()
 
         $userphoto_override_avatar = !empty($_POST['userphoto_override_avatar']);
         update_option('userphoto_override_avatar', $userphoto_override_avatar);
+
+        $userphoto_white_transparency = !empty($_POST['userphoto_white_transparency']);
+        update_option('userphoto_white_transparency', $userphoto_white_transparency);
 
         ?>
     <div id="message" class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p></div>
@@ -829,7 +833,8 @@ function userphoto_options_page()
             <?php _e('Fill with white instead of black', 'user-photo') ?>
         </label>
         <?php echo $betweenRow; ?>
-        <input type="checkbox" name="userphoto_white_transparency" id="userphoto_white_transparency" value="1" />
+        <input type="checkbox" name="userphoto_white_transparency" id="userphoto_white_transparency" 
+                <?php if ($userphoto_override_avatar) echo ' checked="checked"'; ?> value="1" />
         <?php _e("Change the color which replaces transparency during resize from black to white.", 'user-photo') ?>
         <?php echo $afterRow; ?>
         <?php echo $beforeRow ?>
