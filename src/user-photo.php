@@ -826,10 +826,11 @@ function userphoto_options_page()
         <?php echo $afterRow ?>
         <?php echo $beforeRow ?>
         <label for="userphoto_white_transparency">
-            <?php _e('Fill transparency with white instead of black') ?>
+            <?php _e('Fill with white instead of black', 'user-photo') ?>
         </label>
         <?php echo $betweenRow; ?>
         <input type="checkbox" name="userphoto_white_transparency" id="userphoto_white_transparency" value="1" />
+        <?php _e("Change the color which replaces transparency during resize from black to white.", 'user-photo') ?>
         <?php echo $afterRow; ?>
         <?php echo $beforeRow ?>
         <label for="userphoto_admin_notified">
