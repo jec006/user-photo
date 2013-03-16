@@ -834,7 +834,7 @@ function userphoto_options_page()
         </label>
         <?php echo $betweenRow; ?>
         <input type="checkbox" name="userphoto_white_transparency" id="userphoto_white_transparency" 
-                <?php if ($userphoto_override_avatar) echo ' checked="checked"'; ?> value="1" />
+                <?php if ($userphoto_white_transparency) echo ' checked="checked"'; ?> value="1" />
         <?php _e("Change the color which replaces transparency during resize from black to white.", 'user-photo') ?>
         <?php echo $afterRow; ?>
         <?php echo $beforeRow ?>
